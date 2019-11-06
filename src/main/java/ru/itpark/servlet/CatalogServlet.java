@@ -2,6 +2,7 @@ package ru.itpark.servlet;
 
 import ru.itpark.service.AutoService;
 import ru.itpark.service.FileService;
+import ru.itpark.util.ResourcesPaths;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -21,8 +22,8 @@ public class CatalogServlet extends HttpServlet {
         InitialContext context = null;
         try {
             context = new InitialContext();
-            autoService = (AutoService) context.lookup("java:/comp/env/bean/auto-service");
-            fileService = (FileService) context.lookup("java:/comp/env/bean/file-service");
+            autoService = (AutoService) context.lookup(ResourcesPaths.autoServicePath);
+            fileService = (FileService) context.lookup(ResourcesPaths.fileServicePath);
         } catch (NamingException e) {
             e.printStackTrace();
             throw new ServletException(e);
@@ -33,7 +34,7 @@ public class CatalogServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             req.setAttribute("items", autoService.getAll());
-            req.getRequestDispatcher("/WEB-INF/catalog.jsp").forward(req, resp);
+            req.getRequestDispatcher(ResourcesPaths.catalogJspPath).forward(req, resp);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new ServletException(e);

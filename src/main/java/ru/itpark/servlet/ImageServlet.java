@@ -1,6 +1,7 @@
 package ru.itpark.servlet;
 
 import ru.itpark.service.FileService;
+import ru.itpark.util.ResourcesPaths;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -17,7 +18,7 @@ public class ImageServlet extends HttpServlet {
     public void init() throws ServletException {
         try {
             var context = new InitialContext();
-            fileService = (FileService) context.lookup("java:/comp/env/bean/file-service");
+            fileService = (FileService) context.lookup(ResourcesPaths.fileServicePath);
         } catch (NamingException e) {
             e.printStackTrace();
             throw new ServletException(e);

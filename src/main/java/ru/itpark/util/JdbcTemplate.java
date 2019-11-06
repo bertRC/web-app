@@ -1,8 +1,18 @@
 package ru.itpark.util;
 
-public class JdbcTemplate {
-    public static final String uploadPath = "UPLOAD_PATH";
-    public static final String resourceName = "java:/comp/env/jdbc/db";
+import javax.sql.DataSource;
+import java.sql.SQLException;
 
-    private JdbcTemplate() {}
+public class JdbcTemplate {
+    private JdbcTemplate() {
+    }
+
+    public static void execute(DataSource ds, String sql) throws SQLException {
+        try (
+                var conn = ds.getConnection();
+                var stmt = conn.createStatement();
+        ) {
+            stmt.execute(sql);
+        }
+    }
 }

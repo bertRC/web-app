@@ -1,6 +1,6 @@
 package ru.itpark.service;
 
-import ru.itpark.util.JdbcTemplate;
+import ru.itpark.util.ResourcesPaths;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Part;
@@ -13,7 +13,7 @@ public class FileService {
     private final String uploadPath;
 
     public FileService() throws IOException {
-        uploadPath = System.getenv(JdbcTemplate.uploadPath);
+        uploadPath = System.getenv(ResourcesPaths.uploadPath);
         Files.createDirectories(Paths.get(uploadPath));
     }
 

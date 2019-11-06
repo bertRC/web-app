@@ -1,7 +1,7 @@
 package ru.itpark.service;
 
 import ru.itpark.domain.Auto;
-import ru.itpark.util.JdbcTemplate;
+import ru.itpark.util.ResourcesPaths;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -16,7 +16,7 @@ public class AutoService {
 
     public AutoService() throws NamingException, SQLException {
         var context = new InitialContext();
-        ds = (DataSource) context.lookup(JdbcTemplate.resourceName);
+        ds = (DataSource) context.lookup(ResourcesPaths.dbPath);
         try (var conn = ds.getConnection()) {
             try (var stmt = conn.createStatement()) {
                 stmt.execute("CREATE TABLE IF NOT EXISTS autos (id TEXT PRIMARY KEY, name TEXT NOT NULL, description TEXT NOT NULL, image TEXT);");
