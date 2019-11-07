@@ -37,4 +37,14 @@ public class JdbcTemplate {
     public static <T> List<T> executeQuery(DataSource ds, String sql, RowMapper<T> mapper) throws SQLException {
         return executeQuery(ds, sql, stmt -> {}, mapper);
     }
+
+    public static void executeUpdate(DataSource ds, String sql, ValueSetter setter) throws SQLException {
+        try (
+                var conn = ds.getConnection();
+                var stmt = conn.prepareStatement(sql);
+        ) {
+            setter.setValues(stmt);
+            stmt.executeUpdate();
+        }
+    }
 }
