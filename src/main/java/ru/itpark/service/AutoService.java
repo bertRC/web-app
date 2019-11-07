@@ -55,15 +55,28 @@ public class AutoService {
         );
     }
 
+//    public void create(String name, String description, String image) throws SQLException {
+//        try (var conn = ds.getConnection()) {
+//            try (var stmt = conn.prepareStatement("INSERT INTO autos (id, name, description, image) VALUES (?, ?, ?, ?)")) {
+//                stmt.setString(1, UUID.randomUUID().toString());
+//                stmt.setString(2, name);
+//                stmt.setString(3, description);
+//                stmt.setString(4, image);
+//                stmt.execute();
+//            }
+//        }
+//    }
+
     public void create(String name, String description, String image) throws SQLException {
-        try (var conn = ds.getConnection()) {
-            try (var stmt = conn.prepareStatement("INSERT INTO autos (id, name, description, image) VALUES (?, ?, ?, ?)")) {
-                stmt.setString(1, UUID.randomUUID().toString());
-                stmt.setString(2, name);
-                stmt.setString(3, description);
-                stmt.setString(4, image);
-                stmt.execute();
-            }
-        }
+        JdbcTemplate.executeUpdate(
+                ds,
+                "INSERT INTO autos (id, name, description, image) VALUES (?, ?, ?, ?)",
+                stmt -> {
+                    stmt.setString(1, UUID.randomUUID().toString());
+                    stmt.setString(2, name);
+                    stmt.setString(3, description);
+                    stmt.setString(4, image);
+                }
+        );
     }
 }
