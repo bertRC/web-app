@@ -10,9 +10,10 @@ public class JdbcTemplate {
     public static void execute(DataSource ds, String sql) throws SQLException {
         try (
                 var conn = ds.getConnection();
-                var stmt = conn.createStatement();
+//                var stmt = conn.createStatement();
+                var stmt = conn.prepareStatement(sql);
         ) {
-            stmt.execute(sql);
+            stmt.execute();
         }
     }
 }
