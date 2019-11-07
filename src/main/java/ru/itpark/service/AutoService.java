@@ -21,27 +21,6 @@ public class AutoService {
         JdbcTemplate.execute(ds, "CREATE TABLE IF NOT EXISTS autos (id TEXT PRIMARY KEY, name TEXT NOT NULL, description TEXT NOT NULL, image TEXT);");
     }
 
-//    public List<Auto> getAll() throws SQLException {
-//        try (var conn = ds.getConnection()) {
-//            try (var stmt = conn.createStatement()) {
-//                try (var rs = stmt.executeQuery("SELECT id, name, description, image FROM autos;")) {
-//                    var list = new ArrayList<Auto>();
-//
-//                    while (rs.next()) {
-//                        list.add(new Auto(
-//                                rs.getString("id"),
-//                                rs.getString("name"),
-//                                rs.getString("description"),
-//                                rs.getString("image")
-//                        ));
-//                    }
-//
-//                    return list;
-//                }
-//            }
-//        }
-//    }
-
     public List<Auto> getAll() throws SQLException {
         return JdbcTemplate.executeQuery(
                 ds,
@@ -54,18 +33,6 @@ public class AutoService {
                 )
         );
     }
-
-//    public void create(String name, String description, String image) throws SQLException {
-//        try (var conn = ds.getConnection()) {
-//            try (var stmt = conn.prepareStatement("INSERT INTO autos (id, name, description, image) VALUES (?, ?, ?, ?)")) {
-//                stmt.setString(1, UUID.randomUUID().toString());
-//                stmt.setString(2, name);
-//                stmt.setString(3, description);
-//                stmt.setString(4, image);
-//                stmt.execute();
-//            }
-//        }
-//    }
 
     public void create(String name, String description, String image) throws SQLException {
         JdbcTemplate.executeUpdate(
