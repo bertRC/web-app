@@ -18,33 +18,41 @@ public class AutoService {
     public AutoService() throws NamingException, SQLException {
         var context = new InitialContext();
         ds = (DataSource) context.lookup(ResourcesPaths.dbPath);
-//        try (var conn = ds.getConnection()) {
-//            try (var stmt = conn.createStatement()) {
-//                stmt.execute("CREATE TABLE IF NOT EXISTS autos (id TEXT PRIMARY KEY, name TEXT NOT NULL, description TEXT NOT NULL, image TEXT);");
-//            }
-//        }
         JdbcTemplate.execute(ds, "CREATE TABLE IF NOT EXISTS autos (id TEXT PRIMARY KEY, name TEXT NOT NULL, description TEXT NOT NULL, image TEXT);");
     }
 
+//    public List<Auto> getAll() throws SQLException {
+//        try (var conn = ds.getConnection()) {
+//            try (var stmt = conn.createStatement()) {
+//                try (var rs = stmt.executeQuery("SELECT id, name, description, image FROM autos;")) {
+//                    var list = new ArrayList<Auto>();
+//
+//                    while (rs.next()) {
+//                        list.add(new Auto(
+//                                rs.getString("id"),
+//                                rs.getString("name"),
+//                                rs.getString("description"),
+//                                rs.getString("image")
+//                        ));
+//                    }
+//
+//                    return list;
+//                }
+//            }
+//        }
+//    }
+
     public List<Auto> getAll() throws SQLException {
-        try (var conn = ds.getConnection()) {
-            try (var stmt = conn.createStatement()) {
-                try (var rs = stmt.executeQuery("SELECT id, name, description, image FROM autos;")) {
-                    var list = new ArrayList<Auto>();
-
-                    while (rs.next()) {
-                        list.add(new Auto(
-                                rs.getString("id"),
-                                rs.getString("name"),
-                                rs.getString("description"),
-                                rs.getString("image")
-                        ));
-                    }
-
-                    return list;
-                }
-            }
-        }
+        return JdbcTemplate.executeQuery(
+                ds,
+                "SELECT id, name, description, image FROM autos;",
+                rs -> new Auto(
+                        rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getString("image")
+                )
+        );
     }
 
     public void create(String name, String description, String image) throws SQLException {
