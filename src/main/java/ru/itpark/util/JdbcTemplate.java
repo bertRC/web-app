@@ -18,7 +18,7 @@ public class JdbcTemplate {
         }
     }
 
-    public static <T> List<T> executeQuery(DataSource ds, String sql, ValueSetter setter, RowMapper<T> mapper) throws SQLException {
+    public static <T> List<T> executeQuery(DataSource ds, String sql, PreparedStatementSetter setter, RowMapper<T> mapper) throws SQLException {
         try (
                 var conn = ds.getConnection();
                 var stmt = conn.prepareStatement(sql);
@@ -38,7 +38,7 @@ public class JdbcTemplate {
         return executeQuery(ds, sql, stmt -> {}, mapper);
     }
 
-    public static void executeUpdate(DataSource ds, String sql, ValueSetter setter) throws SQLException {
+    public static void executeUpdate(DataSource ds, String sql, PreparedStatementSetter setter) throws SQLException {
         try (
                 var conn = ds.getConnection();
                 var stmt = conn.prepareStatement(sql);
