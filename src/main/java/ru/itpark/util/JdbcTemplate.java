@@ -1,5 +1,7 @@
 package ru.itpark.util;
 
+import ru.itpark.exception.DataStoreException;
+
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,14 +11,26 @@ public class JdbcTemplate {
     private JdbcTemplate() {
     }
 
-    public static void execute(DataSource ds, String sql) throws SQLException {
+    private <T> T executeInternal(DataSource ds, String sql, PreparedStatementExecutor<T> executor) {
         try (
                 var conn = ds.getConnection();
                 var stmt = conn.prepareStatement(sql);
         ) {
-            stmt.execute();
+            return executor.execute(stmt);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DataStoreException(e);
         }
     }
+
+//    public static void execute(DataSource ds, String sql) throws SQLException {
+//        try (
+//                var conn = ds.getConnection();
+//                var stmt = conn.prepareStatement(sql);
+//        ) {
+//            stmt.execute();
+//        }
+//    }
 
     public static <T> List<T> executeQuery(DataSource ds, String sql, PreparedStatementSetter setter, RowMapper<T> mapper) throws SQLException {
         try (
@@ -34,9 +48,9 @@ public class JdbcTemplate {
         }
     }
 
-    public static <T> List<T> executeQuery(DataSource ds, String sql, RowMapper<T> mapper) throws SQLException {
-        return executeQuery(ds, sql, stmt -> {}, mapper);
-    }
+//    public static <T> List<T> executeQuery(DataSource ds, String sql, RowMapper<T> mapper) throws SQLException {
+//        return executeQuery(ds, sql, stmt -> {}, mapper);
+//    }
 
     public static void executeUpdate(DataSource ds, String sql, PreparedStatementSetter setter) throws SQLException {
         try (
