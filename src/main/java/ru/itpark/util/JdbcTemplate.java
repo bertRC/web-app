@@ -11,7 +11,7 @@ public class JdbcTemplate {
     private JdbcTemplate() {
     }
 
-    private <T> T executeInternal(DataSource ds, String sql, PreparedStatementExecutor<T> executor) {
+    private static <T> T executeInternal(DataSource ds, String sql, PreparedStatementExecutor<T> executor) {
         try (
                 var conn = ds.getConnection();
                 var stmt = conn.prepareStatement(sql);
@@ -23,42 +23,28 @@ public class JdbcTemplate {
         }
     }
 
-//    public static void execute(DataSource ds, String sql) throws SQLException {
-//        try (
-//                var conn = ds.getConnection();
-//                var stmt = conn.prepareStatement(sql);
-//        ) {
-//            stmt.execute();
-//        }
-//    }
-
-    public static <T> List<T> executeQuery(DataSource ds, String sql, PreparedStatementSetter setter, RowMapper<T> mapper) throws SQLException {
-        try (
-                var conn = ds.getConnection();
-                var stmt = conn.prepareStatement(sql);
-        ) {
-            setter.setValues(stmt);
-            try (var rs = stmt.executeQuery();) {
+    public static <T> List<T> executeQuery(DataSource ds, String sql, PreparedStatementSetter setter, RowMapper<T> mapper) {
+        return executeInternal(ds, sql, stmt -> {
+            try (var rs = setter.setValues(stmt).executeQuery();) {
                 List<T> result = new ArrayList<>();
                 while (rs.next()) {
                     result.add(mapper.map(rs));
                 }
                 return result;
             }
-        }
+        });
     }
 
-//    public static <T> List<T> executeQuery(DataSource ds, String sql, RowMapper<T> mapper) throws SQLException {
-//        return executeQuery(ds, sql, stmt -> {}, mapper);
-//    }
+    public static <T> List<T> executeQuery(DataSource ds, String sql, RowMapper<T> mapper) {
+        return executeQuery(ds, sql, stmt -> stmt, mapper);
+    }
 
-    public static void executeUpdate(DataSource ds, String sql, PreparedStatementSetter setter) throws SQLException {
-        try (
-                var conn = ds.getConnection();
-                var stmt = conn.prepareStatement(sql);
-        ) {
-            setter.setValues(stmt);
-            stmt.executeUpdate();
-        }
+    public static int executeUpdate(DataSource ds, String sql, PreparedStatementSetter setter) {
+        return executeInternal(ds, sql, stmt ->
+            setter.setValues(stmt).executeUpdate());
+    }
+
+    public static int executeUpdate(DataSource ds, String sql) {
+        return executeUpdate(ds, sql, stmt -> stmt);
     }
 }
