@@ -18,7 +18,8 @@ public class AutoService {
     public AutoService() throws NamingException, SQLException {
         var context = new InitialContext();
         ds = (DataSource) context.lookup(ResourcesPaths.dbPath);
-        JdbcTemplate.execute(ds, "CREATE TABLE IF NOT EXISTS autos (id TEXT PRIMARY KEY, name TEXT NOT NULL, description TEXT NOT NULL, image TEXT);");
+//        JdbcTemplate.execute(ds, "CREATE TABLE IF NOT EXISTS autos (id TEXT PRIMARY KEY, name TEXT NOT NULL, description TEXT NOT NULL, image TEXT);");
+        JdbcTemplate.executeUpdate(ds, "CREATE TABLE IF NOT EXISTS autos (id TEXT PRIMARY KEY, name TEXT NOT NULL, description TEXT NOT NULL, image TEXT);", stmt -> {});
     }
 
     public List<Auto> getAll() throws SQLException {
